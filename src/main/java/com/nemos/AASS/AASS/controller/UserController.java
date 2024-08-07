@@ -1,6 +1,7 @@
 package com.nemos.AASS.AASS.controller;
 
 import com.nemos.AASS.AASS.model.User;
+import com.nemos.AASS.AASS.service.JwtService;
 import com.nemos.AASS.AASS.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,9 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private JwtService jwtService;
+
 
     @PostMapping("register")
     public User register(@RequestBody User user){
@@ -32,7 +36,7 @@ public class UserController {
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
 
         if(authentication.isAuthenticated()){
-            return "Success";
+            return jwtService.generateToken(user.getUsername());
         }
         else {
             return "Login Failed";
